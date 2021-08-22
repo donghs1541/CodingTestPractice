@@ -3,50 +3,42 @@ import java.util.Collections;
 
 class Solution {
     public String solution(int[][] scores) {
-
         StringBuilder answer = new StringBuilder();
         int size = scores.length;
 
-        double[] sum = new double[size];
-        double[] arr = new double[size];
-
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                sum[j] += scores[i][j];
-                if (i == j) arr[i] = scores[i][j];
+        for(int i=0;i<size;i++){
+            int min = 100;
+            int max = 0;
+            int sum = 0;
+            int checkCount = 0;
+            int checkCount2 = 0;
+            int miner = 0;
+            int count =size;
+            for(int j=0;j<size;j++){
+                if(min > scores[j][i]) min = scores[j][i];
+                if(max < scores[j][i]) max = scores[j][i];
             }
+            for(int j=0;j<size;j++){
+                if(min == scores[j][i]) checkCount++;
+                if(max == scores[j][i]) checkCount2++;
+            }
+
+            for(int j=0;j<size;j++){
+                if(j==i){
+                    if(scores[j][i] == min && checkCount <= 1){
+                        miner = scores[j][i];
+                        count--;
+                    }
+                    else if(scores[j][i] == max && checkCount2 <= 1){
+                        miner = scores[j][i];
+                        count--;
+                    }
+                }
+                sum += scores[j][i];
+            }
+            sum -= miner;
+            answer.append(Grade((double)sum/(double)count));
         }
-
-        for (int i = 0; i < size; i++) {
-            double temp = 0.0d;
-            int count = size - 1;
-            for (int j = 0; j < size; j++) {
-                temp += scores[j][i];
-                if ((scores[j][i] < arr[i]) && i != j) count--;
-            }
-
-            if (count == 0) {
-                arr[i] = (temp - arr[i]) / (size - 1);
-                continue;
-            }
-
-            count = size - 1;
-
-            for (int j = 0; j < size; j++) {
-                if ((scores[j][i] > arr[i]) && i != j) count--;
-            }
-
-            if (count == 0) {
-                arr[i] = (temp - arr[i]) / (size - 1);
-            } else {
-                arr[i] = temp / size;
-            }
-        }
-
-        for(int i=0; i<size; i++) {
-            answer.append(Grade(arr[i]));
-        }
-
         return answer.toString();
     }
 
